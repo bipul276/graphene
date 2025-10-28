@@ -1,0 +1,17 @@
+[
+  {"inputs":[{"internalType":"address","name":"admin","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"issuer","type":"address"}],"name":"IssuerAdded","type":"event"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"issuer","type":"address"}],"name":"IssuerRemoved","type":"event"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"certKey","type":"bytes32"},{"indexed":true,"internalType":"address","name":"issuer","type":"address"},{"indexed":false,"internalType":"string","name":"certificateId","type":"string"},{"indexed":false,"internalType":"bytes32","name":"fileHash","type":"bytes32"},{"indexed":false,"internalType":"string","name":"metadataCID","type":"string"}],"name":"CertificateIssued","type":"event"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"certKey","type":"bytes32"},{"indexed":true,"internalType":"address","name":"issuer","type":"address"},{"indexed":false,"internalType":"string","name":"reason","type":"string"}],"name":"CertificateRevoked","type":"event"},
+  {"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"ISSUER_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"ISSUER_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+  {"inputs":[{"internalType":"address","name":"issuer","type":"address"}],"name":"addIssuer","outputs":[],"stateMutability":"nonpayable","type":"function"},
+  {"inputs":[{"internalType":"address","name":"issuer","type":"address"},{"internalType":"string","name":"certificateId","type":"string"}],"name":"certKey","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"pure","type":"function"},
+  {"inputs":[{"internalType":"address","name":"issuer","type":"address"},{"internalType":"string","name":"certificateId","type":"string"}],"name":"get","outputs":[{"internalType":"bool","name":"exists","type":"bool"},{"internalType":"bytes32","name":"onchainFileHash","type":"bytes32"},{"internalType":"string","name":"metadataCID","type":"string"},{"internalType":"uint64","name":"issuedAt","type":"uint64"},{"internalType":"uint64","name":"revokedAt","type":"uint64"}],"stateMutability":"view","type":"function"},
+  {"inputs":[{"internalType":"string","name":"certificateId","type":"string"},{"internalType":"bytes32","name":"fileHash","type":"bytes32"},{"internalType":"string","name":"metadataCID","type":"string"}],"name":"issue","outputs":[],"stateMutability":"nonpayable","type":"function"},
+  {"inputs":[{"internalType":"address","name":"issuer","type":"address"}],"name":"removeIssuer","outputs":[],"stateMutability":"nonpayable","type":"function"},
+  {"inputs":[{"internalType":"string","name":"certificateId","type":"string"},{"internalType":"string","name":"reason","type":"string"}],"name":"revoke","outputs":[],"stateMutability":"nonpayable","type":"function"}
+]
+
