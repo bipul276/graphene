@@ -554,7 +554,7 @@ Certificate Issuance Form
 
 Verification Page
 
-*![Failed](image-4.png)!**[Success](image-7.png)*
+*![Failed](image-4.png)* *![Success](image-7.png)*
 
 Verification Result
 
