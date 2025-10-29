@@ -591,13 +591,14 @@ Certificate Issuance Form
 ![Verification Page](image-2.png) ![Verification step2](image-3.png)
 Verification Page
 
-![Verification Result](image-4.png)
+![Failed](image-4.png)![Success](image-7.png)
 Verification Result
 
 ![Public Ledger](image-5.png)
 Public Ledger
 
-
+![Verified University Page](image-6.png)
+Verified Universities
 ________________________________________
 With these instructions, documentation, and visuals, you should be well-equipped to install, develop, and use the Graphene certificate verification system. For any questions or further clarification, please refer to the issues or discussion forums of the project. Happy coding! If you have any improvements you could think of you are free to fork the project 
 ________________________________________
