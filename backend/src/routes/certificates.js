@@ -32,6 +32,7 @@ router.post('/', requireAuth, async (req, res) => {
 
   const { studentName, title, certificateId, fileHash, metadataCid = null } = parsed.data;
   const issuerId = req.user.issuerId;
+  const DEBUG_HASH = String(process.env.DEBUG_HASH || '').toLowerCase() === 'true';
 
   try {
     // 1) Write on-chain first (preferred)
@@ -44,7 +45,9 @@ router.post('/', requireAuth, async (req, res) => {
     }
 
     // fileHash to bytes32
+    if (DEBUG_HASH) console.log('[hash][issue][backend]', { certificateId, issuerId, fileHash });
     const bytes32Hash = '0x' + fileHash.toLowerCase();
+    if (DEBUG_HASH) console.log('[hash][issue][bytes32]', bytes32Hash);
     const tx = await contract.issueCertificate(certificateId, bytes32Hash, metadataCid || '');
     const receipt = await tx.wait();
 

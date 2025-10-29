@@ -1,6 +1,6 @@
 // src/components/VerifyPage.tsx
 import { useState } from 'react';
-import { Upload, Hash, Building, Search, CheckCircle2, XCircle, FileText, Shield, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Upload, Hash, Building, Search, CheckCircle2, XCircle, FileText, Shield, ChevronLeft, ArrowRight, MapPin, Mail, Image as ImageIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
@@ -136,7 +136,43 @@ export function VerifyPage({ onNavigate }: VerifyPageProps) {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-gray-700">Issued By:</span>
-                      <span className="text-[#1A237E] font-medium">{verificationResult.institutionName}</span>
+                      <div className="relative inline-block group">
+                        <span className="text-[#1A237E] font-medium underline decoration-dotted cursor-help">
+                          {verificationResult.institutionName}
+                        </span>
+                        {/* Hover overlay with institution details */}
+                        <div className="absolute right-0 mt-2 z-20 hidden group-hover:block bg-white border rounded-lg shadow-lg p-4 w-64">
+                          <div className="text-sm text-gray-800 font-semibold mb-2">{verificationResult.institutionName}</div>
+                          <div className="text-xs text-gray-600 space-y-1">
+                            {verificationResult.institutionLogoUrl && (
+                              <div className="mb-2">
+                                <img src={verificationResult.institutionLogoUrl} alt="Logo" className="w-full h-20 object-contain border rounded" />
+                              </div>
+                            )}
+                            {verificationResult.issuerId && (
+                              <div><span className="font-medium">Issuer ID:</span> {verificationResult.issuerId}</div>
+                            )}
+                            {verificationResult.blockchainHash && (
+                              <div className="truncate"><span className="font-medium">Last Tx:</span> {verificationResult.blockchainHash}</div>
+                            )}
+                            {verificationResult.metadataCid && (
+                              <div className="truncate"><span className="font-medium">Metadata:</span> {verificationResult.metadataCid}</div>
+                            )}
+                            {(verificationResult.institutionCity || verificationResult.institutionState) && (
+                              <div className="flex items-center text-gray-600">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                <span>{[verificationResult.institutionCity, verificationResult.institutionState].filter(Boolean).join(', ')}</span>
+                              </div>
+                            )}
+                            {verificationResult.institutionEmail && (
+                              <div className="flex items-center text-gray-600">
+                                <Mail className="h-3 w-3 mr-1" />
+                                <span>{verificationResult.institutionEmail}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-gray-700">Issue Date:</span>
@@ -339,7 +375,7 @@ export function VerifyPage({ onNavigate }: VerifyPageProps) {
                       These identifiers are typically found on your certificate document or in your notification email.
                     </div>
                     <Button variant="link" className="text-[#1A237E] p-0 h-auto text-sm" onClick={() => onNavigate('issuers')}>
-                      View Public Registry →
+                      View Public Registry
                     </Button>
                   </AlertDescription>
                 </Alert>
@@ -416,4 +452,5 @@ export function VerifyPage({ onNavigate }: VerifyPageProps) {
     </div>
   );
 }
+
 

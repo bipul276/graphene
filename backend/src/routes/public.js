@@ -28,6 +28,7 @@ router.get('/', async (req, res) => {
 
   const { certificateId, issuerId, fileHash } = parsed.data;
   const hex32 = '0x' + fileHash.toLowerCase();
+  const DEBUG_HASH = String(process.env.DEBUG_HASH || '').toLowerCase() === 'true';
 
   try {
     // First, load institution to discover its wallet address (if you store it)
@@ -45,23 +46,35 @@ router.get('/', async (req, res) => {
         const issuerWallet = institution.issuer_wallet_address;
         const [exists, onFileHash, metadataCid, issuedAt/*, storedIssuer*/] =
           await registry.getCertificate(issuerWallet, certificateId);
+        const onHex = ethers.hexlify(onFileHash).toLowerCase();
+        if (DEBUG_HASH) console.log('[hash][verify][chain]', { exists, onHex, provided: hex32.toLowerCase() });
+        if (exists && onHex === hex32.toLowerCase()) {
+          // Enrich from DB for public profile fields
+          const pub = await pool.query(
+            `SELECT name AS institution_name, email, logo_url, city, state_province
+               FROM institutions WHERE issuer_id=$1`,
+            [issuerId]
+          );
+          const instPub = pub.rows[0] || {};
 
-        if (exists && ethers.hexlify(onFileHash).toLowerCase() === hex32.toLowerCase()) {
-          // Success from chain
           return res.json({
             isValid: true,
-            certificateTitle: undefined, // we can enrich from DB below if desired
+            certificateTitle: undefined, // not fetched here; DB fallback includes this
             studentName: undefined,
-            institutionName: institution.institution_name,
+            institutionName: instPub.institution_name || institution.institution_name,
             issuerId,
             issueDate: issuedAt ? new Date(Number(issuedAt) * 1000).toISOString() : null,
             blockchainHash: null,   // we could look up last tx from DB if needed
             blockNumber: null,
-            metadataCid
+            metadataCid,
+            institutionLogoUrl: instPub.logo_url || null,
+            institutionCity: instPub.city || null,
+            institutionState: instPub.state_province || null,
+            institutionEmail: instPub.email || null,
           });
         }
       } catch (chainErr) {
-        // chain read failed — we’ll fallback to DB
+        // chain read failed – we'll fallback to DB
         // eslint-disable-next-line no-console
         console.warn('[verify][chain-read-failed]', chainErr?.reason || chainErr?.message || chainErr);
       }
@@ -69,7 +82,7 @@ router.get('/', async (req, res) => {
 
     // 2) DB fallback
     const { rows } = await pool.query(
-      `SELECT c.*, i.name AS institution_name
+      `SELECT c.*, i.name AS institution_name, i.logo_url, i.city, i.state_province, i.email
          FROM certificates c
          JOIN institutions i ON i.issuer_id=c.issuer_id
         WHERE c.certificate_id=$1 AND c.issuer_id=$2`,
@@ -80,6 +93,7 @@ router.get('/', async (req, res) => {
     if (!cert) return res.json({ isValid: false, errorMessage: 'Certificate not found in registry' });
 
     const match = (cert.file_hash || '').toLowerCase() === fileHash.toLowerCase();
+    if (DEBUG_HASH) console.log('[hash][verify][db]', { db: (cert.file_hash || '').toLowerCase(), provided: fileHash.toLowerCase(), match });
     if (!match) {
       return res.json({ isValid: false, errorMessage: 'Document hash does not match registry record' });
     }
@@ -101,7 +115,11 @@ router.get('/', async (req, res) => {
       issueDate: cert.issued_at,
       blockchainHash: cert.onchain_tx_hash || led.rows[0]?.tx_hash || null,
       blockNumber: led.rows[0]?.block_number || null,
-      metadataCid: cert.metadata_cid || null
+      metadataCid: cert.metadata_cid || null,
+      institutionLogoUrl: cert.logo_url || null,
+      institutionCity: cert.city || null,
+      institutionState: cert.state_province || null,
+      institutionEmail: cert.email || null,
     });
   } catch (e) {
     console.error(e);

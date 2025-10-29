@@ -82,6 +82,10 @@ export interface VerificationResult {
   blockchainHash?: string | null;
   blockNumber?: number | null;
   metadataCid?: string | null;
+  institutionLogoUrl?: string | null;
+  institutionCity?: string | null;
+  institutionState?: string | null;
+  institutionEmail?: string | null;
   errorMessage?: string;
 }
 
@@ -185,6 +189,10 @@ export async function verifyCertificate(input: {
   issuerId: string;
 }): Promise<VerificationResult> {
   const fileHash = await sha256File(input.file);
+  if ((import.meta as any)?.env?.VITE_DEBUG_HASH === 'true') {
+    // eslint-disable-next-line no-console
+    console.log('[hash][verify] sha256(file)=', fileHash, 'certId=', input.certificateId, 'issuerId=', input.issuerId);
+  }
   const url = withQuery(`${BASE_URL}/public`, {
     certificateId: input.certificateId,
     issuerId: input.issuerId,
@@ -210,6 +218,10 @@ export async function issueCertificate(input: {
   const token = localStorage.getItem('graphene_token') || '';
   if (!token) throw new Error('Not authenticated');
   const fileHash = await sha256File(input.file);
+  if ((import.meta as any)?.env?.VITE_DEBUG_HASH === 'true') {
+    // eslint-disable-next-line no-console
+    console.log('[hash][issue] sha256(file)=', fileHash);
+  }
   const year = new Date().getFullYear();
   const suffix = Math.random().toString(36).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
   const certificateId = `CERT-${year}-${suffix}`;

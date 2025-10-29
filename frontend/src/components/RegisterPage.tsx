@@ -30,6 +30,44 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverMsg, setServerMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  
+  async function detectLocation() {
+    try {
+      if (!navigator.geolocation) {
+        setServerMsg({ type: 'error', text: 'Geolocation is not supported by this browser.' });
+        return;
+      }
+      await new Promise<void>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            try {
+              const { latitude, longitude } = pos.coords;
+              // Try OpenStreetMap reverse geocoding; not critical if it fails
+              const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+              const res = await fetch(url, { headers: { 'Accept': 'application/json' } }).catch(() => null as any);
+              if (res && res.ok) {
+                const data = await res.json();
+                const addr = data?.address || {};
+                const city = addr.city || addr.town || addr.village || '';
+                const state = addr.state || addr.region || '';
+                const line = data?.display_name?.split(',')?.slice(0, 3)?.join(', ') || '';
+                setForm((prev) => ({ ...prev, address: line, city, stateProvince: state }));
+              } else {
+                setForm((prev) => ({ ...prev, address: `Lat ${latitude.toFixed(5)}, Lon ${longitude.toFixed(5)}`, city: '', stateProvince: '' }));
+              }
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+          (err) => reject(err),
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      });
+    } catch (e: any) {
+      setServerMsg({ type: 'error', text: 'Unable to auto-detect location. You can proceed without it.' });
+    }
+  }
 
   const onChange = (key: string, value: string) =>
     setForm(prev => ({ ...prev, [key]: value }));
@@ -109,24 +147,30 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="address">Address</Label>
-                  <Input id="address" value={form.address} onChange={(e) => onChange('address', e.target.value)} required />
+                  <Label htmlFor="address">Address (auto)</Label>
+                  <Input id="address" value={form.address} readOnly placeholder="Use Detect Location" required />
                 </div>
                 <div>
-                  <Label htmlFor="city">City</Label>
-                  <Input id="city" value={form.city} onChange={(e) => onChange('city', e.target.value)} required />
+                  <Label htmlFor="city">City (auto)</Label>
+                  <Input id="city" value={form.city} readOnly placeholder="Use Detect Location" required />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="stateProvince">State / Province</Label>
-                  <Input id="stateProvince" value={form.stateProvince} onChange={(e) => onChange('stateProvince', e.target.value)} required />
+                  <Label htmlFor="stateProvince">State / Province (auto)</Label>
+                  <Input id="stateProvince" value={form.stateProvince} readOnly placeholder="Use Detect Location" required />
                 </div>
                 <div>
                   <Label htmlFor="contactName">Contact Name</Label>
                   <Input id="contactName" value={form.contactName} onChange={(e) => onChange('contactName', e.target.value)} required />
                 </div>
+              </div>
+
+              <div className="flex items-center justify-end -mt-2">
+                <Button type="button" variant="outline" className="text-xs h-8" onClick={detectLocation}>
+                  Detect Location
+                </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
