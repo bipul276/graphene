@@ -1,4 +1,5 @@
 Graphene – Blockchain-Based Certificate Verification System
+![logo](<Screenshot 2025-10-29 115525-1.png>)
 Project Overview and Purpose
 Graphene is a full-stack web application designed to securely issue and verify academic and professional certificates using blockchain technology. The platform addresses the critical problem of credential fraud by leveraging cryptographic hashing, digital signatures, and an immutable public ledger (Polygon blockchain). The goal is to provide a trustworthy system where institutions (issuers) can issue tamper-proof certificates and third parties (verifiers) can instantly validate a certificate’s authenticity.
 Key objectives of Graphene include:
