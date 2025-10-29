@@ -1,11 +1,6 @@
-Yes, I can fix this. The formatting issues you're seeing on GitHub are because the raw text isn't using Markdown's syntax correctly, especially for **code blocks** and **headings**.
-
-What looks like a comment in your VS Code (e.g., `# SMTP_HOST=...`) is interpreted by GitHub as a **giant heading** because it's not inside a code block. Similarly, your project structure is collapsing into one line because it's not wrapped in a code block that preserves whitespace.
-
-Here is the fully corrected version of your `README.md`. Copy and paste this into GitHub, and it will render perfectly.
 
 -----
-
+*![logo](<Screenshot 2025-10-29 115525-1.png>)*
 # Graphene – Blockchain-Based Certificate Verification System
 
 ## Project Overview and Purpose
@@ -547,18 +542,29 @@ graphene/
 
 ## Screenshots
 
-*Graphene Institution Login*
+*![Institution login](image.png)*
 
-*Certificate Issuance Form*
+Graphene Institution Login
 
- 
-*Verification Page*
+*![Certificate Issue](image-1.png)*
 
-*Verification Result*
+Certificate Issuance Form
 
-*Public Ledger*
+*![Verification Page](image-2.png)* *![Verification step2](image-3.png)*
 
-*Verified Universities*
+Verification Page
+
+*![Failed](image-4.png)!**[Success](image-7.png)*
+
+Verification Result
+
+*![Public Ledger](image-5.png)*
+
+Public Ledger
+
+*![Verified University Page](image-6.png)*
+
+Verified Universities
 
 -----
 
