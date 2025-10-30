@@ -13,13 +13,7 @@ let app: FirebaseApp | null = null;
 let storage: FirebaseStorage | null = null;
 
 const FALLBACK = {
-  apiKey: 'AIzaSyCCYkNH2i01BJE7GisHqmLOyhb4m0xGtw8',
-  authDomain: 'graphene-d5235.firebaseapp.com',
-  projectId: 'graphene-d5235',
-  storageBucket: 'graphene-d5235.firebasestorage.app',
-  messagingSenderId: '999988873623',
-  appId: '1:999988873623:web:4df06c3906cb815ce99cd2',
-  measurementId: 'G-D21Y8CZZY8',
+  
 };
 
 function getEnv(key: string): string | undefined {
